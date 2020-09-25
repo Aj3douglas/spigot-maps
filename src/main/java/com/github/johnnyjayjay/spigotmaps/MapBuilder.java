@@ -91,7 +91,7 @@ public class MapBuilder {
      * @see ImageRenderer
      * @see SimpleTextRenderer
      * @param renderers A non-null list of renderers to remove
-     * @return this.
+     * @return this
      */
     public MapBuilder removeRenderers(List<MapRenderer> renderers){
         this.renderers.removeAll(renderers);
