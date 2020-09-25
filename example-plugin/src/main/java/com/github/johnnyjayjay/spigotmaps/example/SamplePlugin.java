@@ -17,20 +17,41 @@ import java.net.URL;
 public class SamplePlugin extends JavaPlugin {
 
     @Override
-    public void onEnable() {
-        getCommand("image");
-        getCommand("text");
-        getCommand("atext");
-        getCommand("gif");
-    }
-
-    @Override
     public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {
         if (!(sender instanceof Player))
             return false;
 
         Player player = (Player) sender;
         try {
+            if (name.equals("bigimage")) {
+                URL imageUrl = new URL(args[0]);
+                ImageTools.divideIntoMapSizedParts(ImageTools.loadWithUserAgentFrom(imageUrl), true).stream()
+                        .map(ImageRenderer::create)
+                        .map(RenderedMap::create)
+                        .map(RenderedMap::createItemStack)
+                        .forEach(item -> {
+                            player.getWorld().dropItem(player.getLocation(), item);
+                        });
+                return true;
+            } else if (name.equals("biggif")) {
+                GifDecoder decoder = new GifDecoder();
+                int code = decoder.read(args[0]);
+                if (GifDecoder.STATUS_OK == code) {
+                    GifImage image = GifImage.fromDecoder(decoder);
+                    ImageTools.divideIntoMapSizedParts(image, true).stream()
+                            .map(GifRenderer::create)
+                            .map(RenderedMap::create)
+                            .map(RenderedMap::createItemStack)
+                            .forEach((item) -> {
+                                player.getInventory().addItem(item);
+                                player.updateInventory();
+                                player.sendMessage("§aLook in your inventory!");
+                            });
+                } else {
+                    throw new IOException("Could not load gif image. Code: " + code);
+                }
+                return true;
+            }
             RenderedMap map = createMap(player, name, String.join(" ", args));
             player.getInventory().addItem(map.createItemStack());
             player.updateInventory();
