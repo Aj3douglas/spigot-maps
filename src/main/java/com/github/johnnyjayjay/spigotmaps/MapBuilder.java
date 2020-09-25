@@ -85,6 +85,30 @@ public class MapBuilder {
     }
 
     /**
+     * Removes a {@link MapRenderer} to be used to render this map
+     *
+     * @see AbstractMapRenderer
+     * @see ImageRenderer
+     * @see SimpleTextRenderer
+     * @param renderers A non-null list of renderers to remove
+     * @return this.
+     */
+    public MapBuilder removeRenderers(List<MapRenderer> renderers){
+        this.renderers.removeAll(renderers);
+        return this;
+    }
+
+    /**
+     * Removes one or more {@link MapRenderer} to be used for the map
+     *
+     * @see #removeRenderers(List)
+     * @param renderers One or more renderers, or a non-null array of renderers
+     * @return this.
+     */
+
+    public MapBuilder removeRenderers(MapRenderer... renderers) { return removeRenderers(Arrays.asList(renderers)); }
+
+    /**
      * Adds one or more {@link MapRenderer}s to be used for the map.
      *
      * Without setting any renderer, the map will have no renderers.
